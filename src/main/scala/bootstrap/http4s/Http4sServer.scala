@@ -8,10 +8,10 @@ import cats.effect.{ExitCode, IO, IOApp}
 import cats.syntax.all._
 import com.comcast.ip4s.{Host, Port}
 import fs2.io.net.tls.TLSContext
-import org.http4s.{Uri, _}
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits._
+import org.http4s.{Uri, _}
 import org.slf4j.LoggerFactory
 import pureconfig._
 
@@ -24,6 +24,13 @@ object Http4sServer extends IOApp  {
   private val logger = LoggerFactory.getLogger(classOf[Nothing])
 
 
+  // Log level startup message
+  def logStartupMessage(): Unit = {
+    // Log the current log level (this will print the level of the root logger)
+    val logLevel = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger].getLevel
+    logger.info(s"Application started with log level: $logLevel")
+  }
+  
   val HostName = ConfigSource.default.at("app.dispatch_host").loadOrThrow[String]
   val DevPort = ConfigSource.default.at("app.dispatch_dev_port").loadOrThrow[Int]
   val OBPAPI1_BASEURI = ConfigSource.default.at("app.obp_api_1_base_uri").loadOrThrow[String]
@@ -69,6 +76,10 @@ object Http4sServer extends IOApp  {
   }
 
   override def run(args: List[String]): IO[ExitCode] = {
+    // Log the startup message with the current log level
+    logStartupMessage()
+    
+    // Create an Ember client
     EmberClientBuilder.default[IO].build.use { client =>
       
       val obpApi1Dispatch = new ObpApiDispatch(client, obpApi1BaseUri).routes
