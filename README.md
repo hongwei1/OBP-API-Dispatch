@@ -10,7 +10,7 @@ and the log configuration in [logback.xml](src/main/resources/logback.xml)
 # Build and Run
 
 ````
-mvn clean install
+mvn clean package
 
 java -jar target/OBP-API-Dispatch-1.0-SNAPSHOT-jar-with-dependencies.jar
 ````
