@@ -31,14 +31,14 @@ object Http4sServer extends IOApp  {
     logger.info(s"Application started with log level: $logLevel")
   }
   
-  val HostName = ConfigSource.default.at("app.dispatch_host").loadOrThrow[String]
-  val DevPort = ConfigSource.default.at("app.dispatch_dev_port").loadOrThrow[Int]
-  val OBPAPI1_BASEURI = ConfigSource.default.at("app.obp_api_1_base_uri").loadOrThrow[String]
+  val HOST_NAME = ConfigSource.default.at("app.dispatch_host").loadOrThrow[String]
+  val DEV_PORT = ConfigSource.default.at("app.dispatch_dev_port").loadOrThrow[Int]
+  val OBP_API_1_BASE_URI = ConfigSource.default.at("app.obp_api_1_base_uri").loadOrThrow[String]
   
 
-  val host: Host = Host.fromString(HostName).head
-  val port: Option[Port] = Port.fromInt(DevPort.toInt)
-  val obpApi1BaseUri: Uri = Uri.unsafeFromString(OBPAPI1_BASEURI)
+  val host: Host = Host.fromString(HOST_NAME).head
+  val port: Option[Port] = Port.fromInt(DEV_PORT)
+  val obpApi1BaseUri: Uri = Uri.unsafeFromString(OBP_API_1_BASE_URI)
   
   
   // Convert SSLContext to TLSContext
