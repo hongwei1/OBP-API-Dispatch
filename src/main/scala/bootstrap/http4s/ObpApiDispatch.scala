@@ -38,10 +38,14 @@ class ObpApiDispatch(client: Client[IO], obpApiBaseUri: Uri){
               body = dispatchResponse.body
             ).pure[IO]
         }.handleErrorWith { ex => 
-          IO(logger.error(s"[Dispatch] Error Dispatching to OBP API: ${ex.getMessage}", ex)) *>
+          val errorMessage = s"""${ErrorMessages.UnknownError} Can not get response from Request: ${req.method} ${req.uri} -> ${proxiedUri}. Please check if ${proxiedUri} is running. The exception details:${ex.getMessage}""".stripMargin
+          IO(logger.error(
+            errorMessage, ex)) *> 
             Response[IO](
               status = Status.InternalServerError
-            ).withEntity(s"""{"message": "${ErrorMessages.UnknownError} Please check if OBP-API is dead, details:${ex.getMessage} "}""")
+            ).withEntity(
+                s"""{"message": "$errorMessage"}""".stripMargin
+              )
               .withContentType(`Content-Type`(MediaType.application.json))
               .pure[IO]
         }
