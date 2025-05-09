@@ -34,11 +34,13 @@ object Http4sServer extends IOApp  {
   val HOST_NAME = ConfigSource.default.at("app.dispatch_host").loadOrThrow[String]
   val DEV_PORT = ConfigSource.default.at("app.dispatch_dev_port").loadOrThrow[Int]
   val OBP_API_1_BASE_URI = ConfigSource.default.at("app.obp_api_1_base_uri").loadOrThrow[String]
+  val OBP_API_2_BASE_URI = ConfigSource.default.at("app.obp_api_2_base_uri").loadOrThrow[String]
   
 
   val host: Host = Host.fromString(HOST_NAME).head
   val port: Option[Port] = Port.fromInt(DEV_PORT)
   val obpApi1BaseUri: Uri = Uri.unsafeFromString(OBP_API_1_BASE_URI)
+  val obpApi2BaseUri: Uri = Uri.unsafeFromString(OBP_API_2_BASE_URI)
   
   
   // Convert SSLContext to TLSContext
@@ -82,7 +84,7 @@ object Http4sServer extends IOApp  {
     // Create an Ember client
     EmberClientBuilder.default[IO].build.use { client =>
       
-      val obpApi1Dispatch = new ObpApiDispatch(client, obpApi1BaseUri).routes
+      val obpApi1Dispatch = new ObpApiDispatch(client, obpApi1BaseUri, obpApi2BaseUri).routes
 
       //this is the routers
       val services: Kleisli[({type λ[β$0$] = OptionT[IO, β$0$]})#λ, Request[IO], Response[IO]] = contentTypeMiddleware(JsonErrorHandlerMiddleware(
