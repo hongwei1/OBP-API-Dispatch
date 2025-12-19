@@ -20,7 +20,7 @@ class ObpApiDispatch(client: Client[IO], obpApi1BaseUri: Uri, obpApi2BaseUri: Ur
       //here we need to decide which obp api to use, obpApi1 or obpApi2
       //we have the resource docs in,
       //if V1.3.0, we use obpApi2, others we use obpApi1
-      val obpApiBaseUri = req.uri.path.toString().startsWith("/obp/v1.3.0") match {
+      val obpApiBaseUri = req.uri.path.toString().startsWith("/obp/v7.0.0") match {
         case true => obpApi2BaseUri
         case false => obpApi1BaseUri
       }
